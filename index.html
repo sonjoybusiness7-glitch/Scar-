@@ -47,35 +47,31 @@
       const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.lang = "en-US";
       recognition.start();
-
-      recognition.onresult = function(event) {
+      
+</html>    recognition.onresult = function(event) {
         const userText = event.results[0][0].transcript;
         document.getElementById("response").innerText = "You: " + userText;
 
         let reply = "I am here, boss.";
 
-        if (userText.toLowerCase().includes("hello")) {
-          reply = "Hello boss. Scar online.";
-        }
-    if (userText.toLowerCase().includes('who are you')) {
-    reply = "I am SCAR, your personal AI assistant.";
-}
-if (userText.toLowerCase().includes('open google')) {
-    reply = "Opening Google for you.";
-    window.open("https://www.google.com", "_blank");
-}
-        if (userText.toLowerCase().includes("time")) {
-          reply = "Current time is " + new Date().toLocaleTimeString();
+        if (userText.toLowerCase().includes('hello')) {
+            reply = "Hello boss. Scar online.";
+        } 
+        else if (userText.toLowerCase().includes('who are you')) {
+            reply = "I am SCAR, your personal AI assistant.";
+        } 
+        else if (userText.toLowerCase().includes('time')) {
+            reply = "Current time is " + new Date().toLocaleTimeString();
+        } 
+        else if (userText.toLowerCase().includes('open google')) {
+            reply = "Opening Google for you.";
+            window.open("https://www.google.com", "_blank");
         }
 
         speak(reply);
 
         setTimeout(() => {
-          document.getElementById("response").innerText += "\nSCAR: " + reply;
+            document.getElementById("response").innerText += "\nSCAR: " + reply;
         }, 500);
-      };
-    }
-  </script>
-
-</body>
-</html>
+    };
+    
