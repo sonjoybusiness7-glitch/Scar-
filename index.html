@@ -48,7 +48,7 @@
       recognition.lang = "en-US";
       recognition.start();
       
-</html>    recognition.onresult = function(event) {
+      recognition.onresult = function(event) {
         const userText = event.results[0][0].transcript;
         document.getElementById("response").innerText = "You: " + userText;
 
