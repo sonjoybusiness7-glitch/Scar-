@@ -46,8 +46,7 @@
     function startListening() {
       const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
       recognition.lang = "en-US";
-      recognition.start();
-      
+      recognition.start();    
       recognition.onresult = function(event) {
         const userText = event.results[0][0].transcript;
         document.getElementById("response").innerText = "You: " + userText;
@@ -74,4 +73,4 @@
             document.getElementById("response").innerText += "\nSCAR: " + reply;
         }, 500);
     };
-    
+      
