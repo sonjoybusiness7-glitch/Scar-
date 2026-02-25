@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SCAR Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: #00ffcc;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff0033;
+    }
+    button {
+      padding: 12px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #ff0033;
+      color: white;
+    }
+    #response {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>SCAR</h1>
+  <button onclick="startListening()">🎤 Talk</button>
+  <div id="response">Waiting for command...</div>
+
+  <script>
+    function speak(text) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = "en-US";
+      window.speechSynthesis.speak(speech);
+    }
+
+    function startListening() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = "en-US";
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const userText = event.results[0][0].transcript;
+        document.getElementById("response").innerText = "You: " + userText;
+
+        let reply = "I am here, boss.";
+
+        if (userText.toLowerCase().includes("hello")) {
+          reply = "Hello boss. Scar online.";
+        }
+        if (userText.toLowerCase().includes("time")) {
+          reply = "Current time is " + new Date().toLocaleTimeString();
+        }
+
+        speak(reply);
+
+        setTimeout(() => {
+          document.getElementById("response").innerText += "\nSCAR: " + reply;
+        }, 500);
+      };
+    }
+  </script>
+
+</body>
+</html>
