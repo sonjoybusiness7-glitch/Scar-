@@ -57,6 +57,13 @@
         if (userText.toLowerCase().includes("hello")) {
           reply = "Hello boss. Scar online.";
         }
+    if (userText.toLowerCase().includes('who are you')) {
+    reply = "I am SCAR, your personal AI assistant.";
+}
+if (userText.toLowerCase().includes('open google')) {
+    reply = "Opening Google for you.";
+    window.open("https://www.google.com", "_blank");
+}
         if (userText.toLowerCase().includes("time")) {
           reply = "Current time is " + new Date().toLocaleTimeString();
         }
