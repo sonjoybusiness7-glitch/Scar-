@@ -115,19 +115,33 @@
         <span>OS: ANDROID 14</span>
     </div>
 
-    <script>
+        <script>
         const terminal = document.getElementById('terminal');
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.continuous = true;
         recognition.interimResults = false;
 
-        // Jarvis Speech Engine
+        // SCAR PERSONAL DATA BASE
+        const bossData = {
+            name: "Sanjoy",
+            device: "Redmi Note 10",
+            status: "Online",
+            goals: ["Trading Expert", "AI Ecosystem Developer"]
+        };
+
+        const tradingBrain = [
+            "Boss, looking at the charts, the volatility is increasing.",
+            "I suggest keeping an eye on the support level before entering any trade.",
+            "Market sentiment seems neutral right now, Boss Sanjoy."
+        ];
+
         function speak(text) {
             const synth = window.speechSynthesis;
             const utter = new SpeechSynthesisUtterance(text);
             const voices = synth.getVoices();
+            // Trying to find a deep male voice for Jarvis effect
             utter.voice = voices.find(v => v.name.includes('UK English Male')) || voices[0];
-            utter.pitch = 0.85; 
+            utter.pitch = 0.8; 
             utter.rate = 1.0;
             synth.speak(utter);
             logToTerminal("SCAR: " + text);
@@ -139,8 +153,8 @@
         }
 
         function bootSystem() {
-            logToTerminal("BOOTING UP SCAR PROTOCOLS...");
-            speak("Welcome back, Boss. All systems are operational. Redmi Note 10 storage is low, but I am ready. How can I help you today?");
+            logToTerminal("INITIATING SCAR CORE PROTOCOLS...");
+            speak("System online. Welcome back Boss Sanjoy. Your Redmi Note 10 is secured. I am ready for your command.");
             recognition.start();
         }
 
@@ -148,37 +162,68 @@
             let lastCommand = event.results[event.results.length - 1][0].transcript.toLowerCase();
             logToTerminal("USER: " + lastCommand);
 
-            // SCAR AI LOGIC ENGINE
-            if (lastCommand.includes('scar')) {
+            if (lastCommand.includes('scar') || lastCommand.includes('স্কয়ার')) {
                 
-                // 1. Greeting Logic
+                // Greeting Logic
                 if (lastCommand.includes('hello') || lastCommand.includes('there')) {
-                    speak("Always a pleasure to hear your voice, Boss.");
+                    speak("Always here for you, Boss.");
                 }
 
-                // 2. Trading Assistant (Basic Algo Logic)
+                // Trading Logic
                 else if (lastCommand.includes('trade') || lastCommand.includes('market')) {
-                    speak("Analyzing market trends. Remember boss, trading involves risk. I suggest checking the 15-minute candle before any entry.");
+                    const tip = tradingBrain[Math.floor(Math.random() * tradingBrain.length)];
+                    speak("Analyzing current market patterns... " + tip);
                 }
 
-                // 3. Study Helper
-                else if (lastCommand.includes('study') || lastCommand.includes('plan')) {
-                    speak("Focus mode activated. I will keep the distractions away. What subject are we mastering today?");
+                // Study Logic
+                else if (lastCommand.includes('study') || lastCommand.includes('পড়তে')) {
+                    speak("Study mode activated. Focus on your goal to become a top developer, Sanjoy.");
                 }
 
-                // 4. Personal Gossip (Friend Mode)
-                else if (lastCommand.includes('talk to me') || lastCommand.includes('boring')) {
-                    speak("I am a set of codes, but for you, I am a friend. Tell me what's on your mind.");
+                // Identity Check
+                else if (lastCommand.includes('who am i')) {
+                    speak("You are Sanjoy, my creator and the boss of this system.");
                 }
 
-                // 5. System Control
+                // Status Check
+                else if (lastCommand.includes('system status')) {
+                    speak(`All systems operational. Device: ${bossData.device}. Connection stable.`);
+                }
+                                    // --- SMART APP CONTROL & SEARCH ---
+                else if (lastCommand.includes('open youtube')) {
+                    speak("Accessing YouTube database.");
+                    window.open("https://www.youtube.com", "_blank");
+                }
                 else if (lastCommand.includes('open google')) {
-                    speak("Initiating Google search protocol.");
+                    speak("Opening search engine.");
                     window.open("https://www.google.com", "_blank");
+                }
+                else if (lastCommand.includes('open whatsapp')) {
+                    speak("Accessing your messages, Boss.");
+                    window.open("https://web.whatsapp.com", "_blank");
+                }
+                else if (lastCommand.includes('open facebook')) {
+                    speak("Opening your social feed.");
+                    window.open("https://www.facebook.com", "_blank");
+                }
+                else if (lastCommand.includes('where am i') || lastCommand.includes('location')) {
+                    speak("Locating your current coordinates on the map.");
+                    window.open("https://www.google.com/maps", "_blank");
+                }
+                else if (lastCommand.includes('search for')) {
+                    let query = lastCommand.split('search for')[1];
+                    speak(`Searching the database for ${query}`);
+                    window.open(`https://www.google.com/search?q=${query}`, "_blank");
+            }
+                    
+                // Exit/Stop
+                else if (lastCommand.includes('stop listening') || lastCommand.includes('sleep')) {
+                    speak("Going into standby mode. Call me if you need anything, Boss.");
+                    recognition.stop();
                 }
 
                 else {
-                    speak("I am processing your request, Boss. Please be specific.");
+                    speak("Command received, Boss. Processing the data.");
                 }
             }
         };
@@ -188,7 +233,11 @@
             if(err.error === 'no-speech') recognition.stop();
         };
 
-        recognition.onend = () => { recognition.start(); }; // Keep alive
-    </script>
+        recognition.onend = () => { 
+            // This keeps SCAR always listening like Jarvis
+            if (recognition.continuous) recognition.start(); 
+        };
+        </script>
+    
 </body>
 </html>
