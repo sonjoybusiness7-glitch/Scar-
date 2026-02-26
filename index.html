@@ -1,75 +1,194 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>SCAR Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="UTF-8">
-  <style>
-    body {
-      background-color: #0f0f0f;
-      color: #00ffcc;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      color: #ff0033;
-    }
-    button {
-      padding: 12px 20px;
-      margin: 10px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background: #ff0033;
-      color: white;
-    }
-    #response {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCAR - Advanced Jarvis System</title>
+    <style>
+        :root {
+            --iron-red: #ff1f1f;
+            --glow-red: rgba(255, 31, 31, 0.6);
+            --bg-black: #050505;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--iron-red);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            border: 5px solid var(--iron-red);
+            box-shadow: inset 0 0 100px var(--glow-red);
+        }
+
+        /* Animated Arc Reactor */
+        .reactor-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px double var(--iron-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .core {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #fff, var(--iron-red));
+            border-radius: 50%;
+            box-shadow: 0 0 50px var(--iron-red);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        #terminal {
+            width: 80%;
+            height: 150px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--iron-red);
+            margin-top: 20px;
+            padding: 15px;
+            overflow-y: auto;
+            color: #00ffcc;
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px #00ffcc;
+        }
+
+        .status-bar {
+            position: absolute;
+            bottom: 20px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        button {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--iron-red);
+            padding: 10px 20px;
+            cursor: pointer;
+            z-index: 10;
+            letter-spacing: 2px;
+        }
+
+        button:hover { background: var(--iron-red); box-shadow: 0 0 30px var(--iron-red); }
+    </style>
 </head>
 <body>
 
-  <button onclick="startListening()">🎤 Talk</button>
-  <div id="response">Waiting for command...</div>
+    <div class="reactor-container">
+        <div class="core"></div>
+    </div>
 
-  <script>
-    function speak(text) {
-      const speech = new SpeechSynthesisUtterance(text);
-      speech.lang = "en-US";
-      window.speechSynthesis.speak(speech);
-    }
+    <h1 style="letter-spacing: 10px;">SCAR v1.0</h1>
+    
+    <div id="terminal">
+        > SYSTEM STANDBY...<br>
+        > WAITING FOR COMMAND...
+    </div>
 
-    function startListening() {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = "en-US";
-      recognition.start();    
-      recognition.onresult = function(event) {
-        const userText = event.results[0][0].transcript;
-        document.getElementById("response").innerText = "You: " + userText;
+    <button onclick="bootSystem()">BOOT SYSTEM</button>
 
-        let reply = "I am here, boss.";
+    <div class="status-bar">
+        <span>DEVICE: REDMI NOTE 10</span>
+        <span>SECURITY: ACTIVE</span>
+        <span>OS: ANDROID 14</span>
+    </div>
 
-        if (userText.toLowerCase().includes('hello')) {
-            reply = "Hello boss. Scar online.";
-        } 
-        else if (userText.toLowerCase().includes('who are you')) {
-            reply = "I am SCAR, your personal AI assistant.";
-        } 
-        else if (userText.toLowerCase().includes('time')) {
-            reply = "Current time is " + new Date().toLocaleTimeString();
-        } 
-        else if (userText.toLowerCase().includes('open google')) {
-            reply = "Opening Google for you.";
-            window.open("https://www.google.com", "_blank");
+    <script>
+        const terminal = document.getElementById('terminal');
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+
+        // Jarvis Speech Engine
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            const utter = new SpeechSynthesisUtterance(text);
+            const voices = synth.getVoices();
+            utter.voice = voices.find(v => v.name.includes('UK English Male')) || voices[0];
+            utter.pitch = 0.85; 
+            utter.rate = 1.0;
+            synth.speak(utter);
+            logToTerminal("SCAR: " + text);
         }
 
-        speak(reply);
+        function logToTerminal(msg) {
+            terminal.innerHTML += `<br>> ${msg}`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
 
-        setTimeout(() => {
-            document.getElementById("response").innerText += "\nSCAR: " + reply;
-        }, 500);
-    };
-      
+        function bootSystem() {
+            logToTerminal("BOOTING UP SCAR PROTOCOLS...");
+            speak("Welcome back, Boss. All systems are operational. Redmi Note 10 storage is low, but I am ready. How can I help you today?");
+            recognition.start();
+        }
+
+        recognition.onresult = (event) => {
+            let lastCommand = event.results[event.results.length - 1][0].transcript.toLowerCase();
+            logToTerminal("USER: " + lastCommand);
+
+            // SCAR AI LOGIC ENGINE
+            if (lastCommand.includes('scar')) {
+                
+                // 1. Greeting Logic
+                if (lastCommand.includes('hello') || lastCommand.includes('there')) {
+                    speak("Always a pleasure to hear your voice, Boss.");
+                }
+
+                // 2. Trading Assistant (Basic Algo Logic)
+                else if (lastCommand.includes('trade') || lastCommand.includes('market')) {
+                    speak("Analyzing market trends. Remember boss, trading involves risk. I suggest checking the 15-minute candle before any entry.");
+                }
+
+                // 3. Study Helper
+                else if (lastCommand.includes('study') || lastCommand.includes('plan')) {
+                    speak("Focus mode activated. I will keep the distractions away. What subject are we mastering today?");
+                }
+
+                // 4. Personal Gossip (Friend Mode)
+                else if (lastCommand.includes('talk to me') || lastCommand.includes('boring')) {
+                    speak("I am a set of codes, but for you, I am a friend. Tell me what's on your mind.");
+                }
+
+                // 5. System Control
+                else if (lastCommand.includes('open google')) {
+                    speak("Initiating Google search protocol.");
+                    window.open("https://www.google.com", "_blank");
+                }
+
+                else {
+                    speak("I am processing your request, Boss. Please be specific.");
+                }
+            }
+        };
+
+        recognition.onerror = (err) => {
+            logToTerminal("SYSTEM ERROR: " + err.error);
+            if(err.error === 'no-speech') recognition.stop();
+        };
+
+        recognition.onend = () => { recognition.start(); }; // Keep alive
+    </script>
+</body>
+</html>
